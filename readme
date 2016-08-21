@@ -1,0 +1,10 @@
+This script requires the "mutagen" library (pip install mutagen). 
+
+The purpose of this script is to organize a music library. It works with MP3, M4A, MP4, and FLAC files. 
+
+Originally, this script was meant to read files from an IPOD and organize them on a computer. Since IPOD audio files use a string of four characters as a name (e.g. "ASDF.mp3"), it is not easy to manually sort your music library. To combat this problem, this script pulls the metadata from a file and then copies the orginal file to /yourMusicLibrary/Artist/Album/SongName.ext.   
+
+Music Organizer is a command line tool and can be run as follows:
+	pyton music_organizer.py /path/to/unsorted/music /path/to/your/library
+
+If no command line arguments are passed, the user will be prompted to input the paths. 
