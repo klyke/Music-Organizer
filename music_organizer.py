@@ -1,5 +1,6 @@
 import os, sys
 
+#not really used, more for refernce
 id3TagMap = {"title": "TIT2",
 			"artist": "TPE2",
 			"album": "TALB"}
@@ -8,7 +9,11 @@ mp4TagMap = {"title": "\xa9nam",
 			"artist": "\xa9ART",
 			"album": "\xa9alb"}
 
-
+'''
+This class organizes a directory/file. 
+The directory can contain other directories.
+Initialize with the path to your music library and verbosity.
+'''
 class MusicOrganizer:
 
 	def __init__(self, musicLib, verbose):
@@ -31,7 +36,6 @@ class MusicOrganizer:
 		if self.verbose >= 1:
 			self.displayStats()
 
-
 	def organizeFolder(self, folder):
 		for item in os.listdir(folder):
 			fpath = os.path.join(folder, item)
@@ -47,7 +51,8 @@ class MusicOrganizer:
 			s = Song(songPath)
 			s.load()
 			if not s.ok:
-				print("Error creating Song Object for " + songPath)
+				if verbosity == 3:
+					print("Error creating Song Object for " + songPath)
 				return
 
 			title = str(s.title).strip()
@@ -97,13 +102,18 @@ class Song:
 			print(path + " does not exist.")
 			sys.exit()
 		self.path = path
-		self.funcMap = None
 		self.ext = os.path.splitext(self.path)[1]
 		self.ok = True
+		self.funcMap = {".mp3": self.loadMP3,
+				".FLAC": self.loadFLAC,
+				".flac": self.loadFLAC,
+				".m4a": self.loadMP4,
+				".mp4": self.loadMP4}
 
 	def load(self):
-		if self.funcMap == None:
-			self.createFuncMap()
+		if self.ext not in self.funcMap.keys():
+			self.ok = False
+			return
 		self.funcMap[self.ext]()
 
 	def loadMP3(self):
@@ -156,13 +166,6 @@ class Song:
 			return None
 
 
-	def createFuncMap(self):
-		self.funcMap = {".mp3": self.loadMP3,
-						".FLAC": self.loadFLAC,
-						".flac": self.loadFLAC,
-						".m4a": self.loadMP4,
-						".mp4": self.loadMP4}
-
 if __name__ == '__main__':
 	ipodDir = None
 	musicLib = None
@@ -175,7 +178,7 @@ if __name__ == '__main__':
 	except:
 		ipodDir = raw_input("File Directory to Orgainze: ")
 		musicLib = raw_input("Music Library: ")
-		verbose = int(raw_input("Verbosity [0, 1, 2]: "))
+		verbose = int(raw_input("Verbosity [0, 1, 2, 3]: "))
 
 	if not os.path.exists(ipodDir):
 		print(ipodDir + " cannot be found.")
